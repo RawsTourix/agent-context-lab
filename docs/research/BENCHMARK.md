@@ -90,6 +90,23 @@ Purpose:
 - measure position sensitivity;
 - ensure one selection policy is not accidentally favored by a hidden ordering change.
 
+### F. Structural-dependency cases
+
+Controlled cases where provider-neutral information has explicit dependencies or grouping requirements.
+
+Examples:
+
+- a fact requires its provenance/source label;
+- a tool observation must retain the structural call/result linkage needed by the serializer;
+- two complementary elements are jointly necessary.
+
+Purpose:
+
+- prove that Context Engine materialization stays provider-valid;
+- test extended dependency/group constraints separately from the base one-budget model.
+
+Structural protocol overhead should not be mislabeled as semantic utility.
+
 ## 4. Selection baselines
 
 Every serious comparison should include simple baselines.
