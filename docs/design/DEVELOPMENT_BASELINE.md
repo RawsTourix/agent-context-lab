@@ -125,6 +125,31 @@ Do not encode SciPy-specific objects into benchmark contracts.
 
 Use a project-owned `ModelGateway` protocol.
 
+### Deterministic adapter first
+
+Phase 1 should start with a `ScriptedModel` / `FakeModel` adapter that returns a predefined sequence such as:
+
+```text
+model turn 1 → deterministic tool request
+tool fixture  → deterministic observation
+model turn 2 → deterministic final answer
+```
+
+Purpose:
+
+- test Cortex/model-tool control flow without network/provider noise;
+- validate event ordering and Run Bundle replay;
+- make the first regression suite free and deterministic;
+- verify the Workbench before any real API cost exists.
+
+This adapter is test infrastructure, not a benchmark policy.
+
+### Real provider adapter second
+
+After the deterministic vertical slice works, add one real provider adapter behind the same interface.
+
+An OpenAI-compatible transport is a reasonable first interoperability target, but the exact provider is **not a Phase-1 architecture blocker**.
+
 Provider SDKs may sit behind adapters.
 
 Do not make a third-party agent framework the Cortex.
@@ -179,7 +204,7 @@ Resolve explicitly:
 - repository license;
 - Python minimum version;
 - dependency manager;
-- first model provider/adapter used for smoke tests;
+- first real model provider/adapter after the deterministic ScriptedModel slice;
 - local data directory and gitignore policy;
 - schema versioning convention.
 
