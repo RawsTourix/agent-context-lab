@@ -4,19 +4,21 @@ This repository is documentation-first: architecture, experiment semantics and r
 
 ## Design
 
-- [CONCEPT.md](design/CONCEPT.md) — research problem, hypotheses, terminology and project boundaries.
-- [ARCHITECTURE.md](design/ARCHITECTURE.md) — component ownership, Cortex, Context Engine and the three-plane architecture.
+- [CONCEPT.md](design/CONCEPT.md) — research problem, hypotheses, terminology, mathematical assumptions and project boundaries.
+- [ARCHITECTURE.md](design/ARCHITECTURE.md) — component ownership, Cortex, Context Engine, experiment identity and evidence flow.
+- [DEVELOPMENT_BASELINE.md](design/DEVELOPMENT_BASELINE.md) — proposed Python/tooling/storage/solver baseline before Phase 1 code.
 
 ## Research
 
-- [BENCHMARK.md](research/BENCHMARK.md) — benchmark cases, baselines, scorers, selection policies, metrics and experiment protocol.
-- [OBSERVABILITY.md](research/OBSERVABILITY.md) — trace/event model, ContextProjection manifests and reproducibility data.
-- [RESEARCH_WORKBENCH.md](research/RESEARCH_WORKBENCH.md) — researcher-facing UI, plots, tables, exports and data storage.
-- [COURSEWORK_ALIGNMENT.md](research/COURSEWORK_ALIGNMENT.md) — how the same research harness can support laboratory works 1–7 without becoming course-specific runtime code.
+- [BENCHMARK.md](research/BENCHMARK.md) — benchmark cases, baselines, scorers, selection policies, metrics and workload families.
+- [EXPERIMENT_DESIGN.md](research/EXPERIMENT_DESIGN.md) — paired comparisons, repetitions, dev/test separation, quality floors and uncertainty reporting.
+- [OBSERVABILITY.md](research/OBSERVABILITY.md) — append-only run evidence, event model, ContextProjection manifests and replay/privacy rules.
+- [RESEARCH_WORKBENCH.md](research/RESEARCH_WORKBENCH.md) — researcher-facing UI, trajectory/context inspection, plots, tables, annotations and exports.
+- [COURSEWORK_ALIGNMENT.md](research/COURSEWORK_ALIGNMENT.md) — how the same research harness supports laboratory works 1–7 without becoming course-specific runtime code.
 
 ## References
 
-- [SOURCES.md](references/SOURCES.md) — project-local and external sources, with notes on what is reusable and what is only conceptual input.
+- [SOURCES.md](references/SOURCES.md) — project-local and external sources, evidence strength, reuse notes and scientific prior art.
 
 ## Planning
 
