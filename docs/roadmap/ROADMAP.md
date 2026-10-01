@@ -36,6 +36,7 @@ Build:
 - package scaffold;
 - minimal run lifecycle;
 - provider-neutral Model Gateway;
+- deterministic ScriptedModel/FakeModel adapter;
 - tiny deterministic fixture-backed tool interface;
 - ExperimentSpec / TrialSpec / RunAttempt ids;
 - append-only structured events;
@@ -55,7 +56,7 @@ Also build a **minimal read-only Workbench** early:
 
 Exit criterion:
 
-> One deterministic benchmark case runs end-to-end, produces an append-only replayable trace, and can be inspected in the Workbench.
+> One fully deterministic scripted-model benchmark case runs end-to-end, produces an append-only replayable trace, and can be inspected in the Workbench without any external model API.
 
 ## Phase 2 — static context-selection harness
 
