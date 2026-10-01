@@ -204,6 +204,28 @@ Model quality can depend on where information is placed in a long context.
 
 Therefore ordering is fixed and versioned in v0. Later experiments may study ordering explicitly.
 
+### A6 — structural validity is outside the simple subset equation
+
+A context element is a provider-neutral research unit, not necessarily one raw API message.
+
+Some provider/runtime structures have dependencies. For example, a tool result may require corresponding tool-call metadata, and message roles/order may have validity rules.
+
+Therefore the Context Engine must guarantee one of:
+
+- a selected element is self-contained when materialized;
+- required structural dependencies are added as fixed/closure material;
+- dependency constraints are represented explicitly in a richer selection model.
+
+The selector must never produce an invalid provider request merely because a binary subset satisfies the budget equation.
+
+### A7 — eligibility precedes optimization
+
+Security, disclosure, authority and runtime-validity rules are hard filters/constraints, not utility preferences.
+
+Only eligible optional elements enter ordinary utility optimization.
+
+A high utility score cannot override a rule that forbids information from being sent to the selected model/provider.
+
 These assumptions make the laboratory model understandable without pretending that all context-management behavior reduces to one knapsack problem.
 
 ## 7. Quality-first objective
