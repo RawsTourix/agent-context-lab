@@ -54,11 +54,11 @@ Two different sources of error must be measured separately:
 1. **Scorer error:** wrong estimate of a context element's usefulness.
 2. **Selector error:** suboptimal subset selection given the scores and constraints.
 
-This is why the benchmark includes an oracle/ground-truth scorer for controlled cases.
+This is why the benchmark includes ground-truth/oracle-style controlled cases.
 
 ### H3 — the best policy depends on workload and budget
 
-No single policy should be assumed universally optimal. Full-history, sliding-window, greedy, optimization-based and later dynamic-residency policies must be compared under the same agent runtime.
+No single policy should be assumed universally optimal. Full-history, sliding-window, greedy, optimization-based and later dynamic-residency policies must be compared under the same controlled runtime.
 
 ### H4 — dynamic residency may outperform one-shot reduction on long tasks
 
@@ -68,7 +68,7 @@ This is a future extension, not a requirement for the first prototype.
 
 ## 4. Cortex
 
-**Cortex** is a project-local name for the stable agent execution kernel.
+**Cortex** is a project-local name for the stable experimental execution kernel.
 
 Cortex owns only the generic runtime loop:
 
@@ -90,7 +90,11 @@ Cortex must **not** own:
 - durable long-term memory;
 - 5R-AXIS canonical semantics.
 
-Reason: in a controlled experiment, the agent runtime should stay fixed while the independent variable changes.
+"Stable" does not mean frozen forever. It means:
+
+> within a controlled comparison, the same Cortex version is held fixed while the declared treatment variable changes.
+
+A later Cortex revision creates a new experimental basis and must be recorded in manifests.
 
 ## 5. Context terminology
 
@@ -108,11 +112,13 @@ All information the runtime is allowed to consider for the current call.
 
 ### Mandatory context
 
-Information that must be included for correctness/policy/runtime reasons. It is not competing with optional candidates in the simplest optimization model; its token cost can be reserved before optional selection.
+Information that must be included for correctness/policy/runtime reasons.
+
+In the simplest optimization model, mandatory content does not compete with optional candidates; its cost is reserved before optional selection.
 
 ### ContextProjection
 
-The immutable model-facing context assembled for one particular model invocation.
+The immutable, ordered model-facing context assembled for one particular model invocation.
 
 This term is intentionally compatible with 5R-AXIS research, but Agent Context Lab remains an independent experimental project.
 
@@ -122,21 +128,101 @@ A pre-selection estimate of how useful an optional context element is for the cu
 
 It is **not** the same thing as measured final task quality.
 
-## 6. Quality-first objective
+## 6. Base static optimization model: assumptions
+
+The first mathematical model is intentionally simple.
+
+For optional elements (i = 1..N):
+
+```text
+x_i ∈ {0, 1}
+s_i = estimated token/resource cost
+v_i = estimated utility
+B   = optional-context budget
+```
+
+Base objective:
+
+```text
+maximize Σ(v_i * x_i)
+
+subject to:
+
+Σ(s_i * x_i) <= B
+```
+
+This model makes simplifying assumptions that must be explicit.
+
+### A1 — indivisible elements
+
+Each candidate is either selected or not selected.
+
+Changing element granularity changes the problem and is controlled by a versioned ElementizationPolicy.
+
+### A2 — additive utility proxy
+
+The objective treats the contribution of each selected element as additive.
+
+Real context can violate this through:
+
+- complementary facts;
+- prerequisites;
+- redundancy;
+- contradictions;
+- coverage effects.
+
+Therefore:
+
+> ILP optimality means optimality with respect to the declared surrogate scores and constraints, not guaranteed optimality of real task quality.
+
+Later models may add dependency/group/coverage constraints or non-additive objectives when evidence justifies them.
+
+### A3 — additive estimated cost
+
+The classroom model treats token cost as additive.
+
+Real serialized model input also includes:
+
+- message/role framing;
+- system instructions;
+- tool schemas;
+- protocol/provider overhead;
+- separators/formatting;
+- tokenizer/model differences.
+
+Therefore (s_i) is a controlled cost estimate under a declared serializer/tokenizer, and the actual materialized model input is measured separately.
+
+### A4 — fixed representation
+
+Static selection v0 chooses among already materialized candidate representations.
+
+Raw vs summary vs extractive/structured representations are a separate future treatment variable.
+
+### A5 — fixed ordering
+
+Model quality can depend on where information is placed in a long context.
+
+Therefore ordering is fixed and versioned in v0. Later experiments may study ordering explicitly.
+
+These assumptions make the laboratory model understandable without pretending that all context-management behavior reduces to one knapsack problem.
+
+## 7. Quality-first objective
 
 The project must never report "fewer tokens" as sufficient evidence of improvement.
 
-At minimum, every benchmark comparison should pair resource metrics with outcome metrics:
+At minimum, every benchmark comparison pairs resource metrics with outcome metrics:
 
 - task success / quality;
 - critical omission rate;
 - input tokens;
-- total tokens/cost where available;
+- total system tokens/cost where available;
 - latency.
+
+Scoring/selection overhead is part of system cost.
 
 The important research surface is the trade-off between quality and resource use.
 
-## 7. Scope
+## 8. Scope
 
 ### In scope
 
@@ -148,7 +234,7 @@ The important research surface is the trade-off between quality and resource use
 - full/sliding/greedy/ILP selection policies;
 - evaluator independent from scorer;
 - traces and ContextProjection manifests;
-- research data store;
+- append-only research evidence and derived analytical store;
 - automatic tables/plots/comparisons/exports;
 - later: PIN / RELEASE / EVICT / RECALL experiments.
 
@@ -164,11 +250,13 @@ The important research surface is the trade-off between quality and resource use
 - hidden chain-of-thought collection;
 - provider-specific context semantics as project truth.
 
-## 8. Relationship to other projects
+## 9. Relationship to other projects
 
 Agent Context Lab is intentionally between two existing code/research bases:
 
 - **internet-search-bot** provides real-world agent-loop and tool-use experience plus empirical traces.
 - **5R-AXIS** provides stronger architectural ideas around bounded model-facing projections, source ownership, reversible residency and provenance.
 
-The lab must reuse ideas and selected implementation patterns, not copy either architecture wholesale.
+External research supplies additional comparison points for long-context use, prompt/context compression, agent trajectory logging and evaluation.
+
+The lab must reuse evidence, ideas and selected implementation patterns without copying another architecture wholesale.
