@@ -16,7 +16,7 @@ This project asks:
 
 > **Which information should the model see now, under a limited context/token budget, without causing an unacceptable loss in task quality?**
 
-The first stage studies static selection for one model invocation. Later stages may extend this to dynamic residency with reversible eviction and recall.
+The first stage studies static selection for one model invocation. Later stages may extend this to alternative representations and dynamic residency with reversible eviction and recall.
 
 ## Architecture at a glance
 
@@ -31,7 +31,8 @@ The first stage studies static selection for one model invocation. Later stages 
               v                   v
         Context Engine        Tool Runtime
               |
-       scorer + selector
+   elementize / score / select
+   represent / order / serialize
               |
               v
        ContextProjection
@@ -42,10 +43,13 @@ The first stage studies static selection for one model invocation. Later stages 
               v
               LLM
 
-events / manifests / metrics
+append-only events / manifests / artifacts
               |
               v
-          Research Store
+           Run Bundle
+              |
+              v
+      Derived Research Store
               |
               v
       Research Workbench
@@ -53,7 +57,7 @@ events / manifests / metrics
 
 ### Cortex
 
-**Cortex** is the stable execution kernel of the experimental agent.
+**Cortex** is the project-local stable experimental execution kernel.
 
 It runs the model/tool loop but intentionally does **not** decide:
 
@@ -61,16 +65,18 @@ It runs the model/tool loop but intentionally does **not** decide:
 - which selection algorithm is used;
 - how benchmark quality is evaluated.
 
-That separation lets experiments change one independent variable without silently changing the agent itself.
+"Stable" means fixed within a controlled comparison, not frozen forever.
 
 ## Research principles
 
 1. **Quality first.** Fewer tokens are not an improvement if the task result becomes unacceptably worse.
 2. **Scorer ≠ selector ≠ evaluator.** Utility estimation, subset optimization and final task evaluation are separate.
-3. **Reproducibility.** Every run records model configuration, policy/scorer versions, benchmark case, code/data revision and actual model-facing context.
-4. **Provider neutrality.** Provider-native context features may optimize execution but do not define project semantics.
-5. **Observable context.** Each model call should have a ContextProjection manifest describing what was available, selected and sent.
-6. **Research data are first-class.** Plots and tables are generated from stored experiment data, not assembled manually after the fact.
+3. **Model assumptions are explicit.** The first 0–1 model uses additive utility/cost as a controlled simplification, not as a universal truth about context.
+4. **Position and granularity are controlled.** Ordering and elementization can affect quality and must not change silently between treatments.
+5. **Replayable evidence.** Every run preserves append-only structured evidence sufficient to reconstruct the experiment configuration and model-facing input when privacy settings allow it.
+6. **Provider neutrality.** Provider-native context features may optimize execution but do not define project semantics.
+7. **Research data are first-class.** Plots and tables are generated from stored experiment data, not assembled manually after the fact.
+8. **Total system cost matters.** Scorer/retrieval/solver overhead is measured rather than hidden behind downstream prompt savings.
 
 ## Planned research path
 
@@ -78,11 +84,21 @@ Initial static experiment:
 
 ```text
 available context
+→ elementization
 → utility scoring
 → selection under budget
+→ fixed representation/order
 → model call
 → task result
 → independent evaluation
+```
+
+Later representation/compression experiments:
+
+```text
+selected source
+→ raw | extractive | structured | summary
+→ model call
 ```
 
 Later temporal extension:
@@ -98,11 +114,11 @@ P2 → model call
 P3 → model call
 ```
 
-Candidate operations for future experiments:
+Candidate future operations:
 
 `PIN / RELEASE / EVICT / RECALL / COMPACT`.
 
-The important invariant is:
+Important invariant:
 
 ```text
 not resident in the current context != deleted
@@ -115,7 +131,9 @@ Start here:
 - [Documentation map](docs/README.md)
 - [Concept baseline](docs/design/CONCEPT.md)
 - [Architecture](docs/design/ARCHITECTURE.md)
+- [Development baseline](docs/design/DEVELOPMENT_BASELINE.md)
 - [Benchmark protocol](docs/research/BENCHMARK.md)
+- [Experiment design](docs/research/EXPERIMENT_DESIGN.md)
 - [Observability](docs/research/OBSERVABILITY.md)
 - [Research Workbench](docs/research/RESEARCH_WORKBENCH.md)
 - [Coursework alignment](docs/research/COURSEWORK_ALIGNMENT.md)
@@ -128,26 +146,28 @@ For coding agents and contributors:
 
 ## Existing inputs
 
-This project is intentionally informed by — but independent from — three existing workstreams:
+This project is intentionally informed by — but independent from — existing workstreams:
 
 - [RawsTourix/internet-search-bot](https://github.com/RawsTourix/internet-search-bot) — practical Gen1 agent/tool loop and real operational traces.
 - [5R-AXIS/agent](https://github.com/5r-axis/agent) — architectural research around bounded ContextProjection, source ownership, provenance and dynamic context residency.
 - [optimization-and-system-modeling/lab_context](https://github.com/rosbiotech-studies/optimization-and-system-modeling/tree/main/lab_context) — academic problem framing and sanitized real-trace reference material.
 
-External prior art is tracked in [SOURCES.md](docs/references/SOURCES.md).
+External prior art now tracked includes long-context evaluation, compression, trajectory/evaluation frameworks and provider context hooks. See [SOURCES.md](docs/references/SOURCES.md).
 
 ## Current implementation direction
 
 The first implementation should stay deliberately small:
 
-- Python;
+- Python 3.11+;
 - modular monolith;
 - provider-neutral Model Gateway;
-- minimal deterministic tool interface;
-- DuckDB + Parquet + JSON/JSONL research storage;
+- deterministic fixture-backed tools;
+- append-only JSON/JSONL Run Bundles;
+- DuckDB + Parquet derived research storage;
 - Streamlit + Plotly first Research Workbench;
 - full/sliding/greedy/ILP context-selection policies;
-- OracleScorer before more complex learned/LLM scorers.
+- OracleScorer before more complex heuristic/embedding/LLM scorers;
+- `scipy.optimize.milp` / HiGHS as the initial ILP candidate.
 
 These technology choices are provisional. The experiment semantics and data contracts are more important than any UI or framework.
 
@@ -162,8 +182,12 @@ Not required:
 - distributed runtime;
 - full MCP discovery stack;
 - consumer chat product;
-- hidden chain-of-thought logging.
+- hidden chain-of-thought logging;
+- learned context compression;
+- self-evolving context policy.
 
 ## License
 
-No project license has been selected yet. Before reusing code from external repositories, verify source-license compatibility and attribution requirements.
+No project license has been selected yet.
+
+Before Phase 1 implementation, the repository license should be chosen. Reuse from other projects follows the license/provenance rules in [SOURCES.md](docs/references/SOURCES.md).
