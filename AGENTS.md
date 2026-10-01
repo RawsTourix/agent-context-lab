@@ -19,6 +19,8 @@ Before implementing or changing architecture, read:
 - Context reduction is not success unless task quality remains acceptable.
 - ILP optimality is only with respect to the declared surrogate scores/constraints.
 - Elementization, representation and ordering are experiment-affecting factors; do not change them silently.
+- Selection operates on provider-neutral research elements; Context Engine materialization must preserve provider/tool structural validity.
+- Eligibility/security/disclosure constraints are hard constraints and must not be converted into utility preferences.
 - Every model call must be reconstructable from structured observability/manifests to the extent permitted by local privacy settings.
 - Canonical run evidence is append-only; analytical databases are derived/rebuildable.
 - Do not rely on parsing free-form logs for research metrics.
