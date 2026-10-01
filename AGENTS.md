@@ -145,4 +145,4 @@ Not required for v0 unless a concrete benchmark proves the need:
 - learned context compression;
 - autonomous context-policy evolution.
 
-Start with deterministic fixture-backed tools and a simple, inspectable runtime.
+Start with a deterministic ScriptedModel/FakeModel plus fixture-backed tools and a simple, inspectable runtime. A live provider is the second vertical slice, not a prerequisite for proving the research apparatus.
