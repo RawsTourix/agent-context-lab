@@ -12,6 +12,7 @@ This repository is documentation-first: architecture, experiment semantics and r
 - [BENCHMARK.md](research/BENCHMARK.md) — benchmark cases, baselines, scorers, selection policies, metrics and experiment protocol.
 - [OBSERVABILITY.md](research/OBSERVABILITY.md) — trace/event model, ContextProjection manifests and reproducibility data.
 - [RESEARCH_WORKBENCH.md](research/RESEARCH_WORKBENCH.md) — researcher-facing UI, plots, tables, exports and data storage.
+- [COURSEWORK_ALIGNMENT.md](research/COURSEWORK_ALIGNMENT.md) — how the same research harness can support laboratory works 1–7 without becoming course-specific runtime code.
 
 ## References
 
