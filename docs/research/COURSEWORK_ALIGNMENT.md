@@ -22,9 +22,9 @@ For optional context elements:
 
 ```text
 x_i in {0, 1}
-s_i = token cost
-v_i = estimated utility
-B   = optional-context token budget
+s_i = estimated token/resource cost under the declared elementization/tokenizer basis
+v_i = estimated utility proxy
+B   = optional-context budget
 ```
 
 Base formulation:
@@ -38,6 +38,14 @@ Mandatory context is preferably reserved before optional selection in the simple
 
 The classroom example can use a small N while the formulation remains valid for arbitrary N.
 
+Important interpretation:
+
+- (s_i) is a controlled additive estimate for the mathematical model; actual serialized input is measured separately;
+- (v_i) is a surrogate utility estimate, not measured final task quality;
+- the additive objective is a base assumption, not a claim that real context elements never interact.
+
+These limitations belong in the project methodology even if the classroom write-up keeps the base model compact.
+
 ## Laboratory work 3 — method and computational applicability
 
 Project contribution:
@@ -45,7 +53,8 @@ Project contribution:
 - ILPPolicy implementation;
 - comparison with simple baselines;
 - separate large-N deterministic generator;
-- solver status/time/objective diagnostics.
+- solver status/time/objective/gap diagnostics;
+- hardware/solver version capture for performance claims.
 
 This allows testing scalability without paying for LLM calls.
 
@@ -57,7 +66,8 @@ Project contribution:
 - trace-derived workload design;
 - ContextProjection manifests;
 - token/latency/tool-event measurements;
-- reproducible RunManifest.
+- append-only Run Bundles;
+- reproducible ExperimentSpec/TrialSpec/RunAttempt hierarchy.
 
 Real `internet-search-bot` traces are empirical references, not automatically benchmark ground truth.
 
@@ -73,9 +83,12 @@ Project contribution:
 - deterministic heuristic scorer;
 - embedding scorer;
 - LLM scorer;
-- comparison/calibration against known relevance where available.
+- comparison/calibration against known relevance where available;
+- explicit measurement of scorer overhead.
 
 This stage must preserve the distinction between estimated utility and final task quality.
+
+If scorer prompts/thresholds are tuned, development and final-test cases must be separated.
 
 ## Laboratory work 6 — software implementation
 
@@ -84,12 +97,13 @@ Project contribution:
 - Cortex;
 - Context Engine;
 - Model Gateway;
-- tool runtime;
+- deterministic tool runtime;
 - scorers;
 - selection policies;
 - Experiment Runner;
-- Run Store;
-- first usable Research Workbench.
+- append-only observability;
+- Research Store;
+- Research Workbench.
 
 The implementation should remain minimal enough that the experiment stays understandable.
 
@@ -99,14 +113,18 @@ Project contribution:
 
 - controlled policy/scorer/budget comparisons;
 - task-quality evaluation;
+- target-model and context-management overhead;
 - token/cost/latency metrics;
 - Pareto analysis;
 - failure/critical-omission analysis;
+- confidence intervals/effect sizes where appropriate;
 - automatic plots/tables/exports.
 
 The main empirical question is not "how many tokens were removed?" but:
 
-> How much context cost can be reduced before task quality degrades beyond the acceptable threshold?
+> How much context/system cost can be reduced before task quality degrades beyond a predeclared acceptable threshold?
+
+Position/order and element granularity are controlled factors so they do not silently invalidate the comparison.
 
 ## Beyond the laboratory sequence
 
@@ -117,6 +135,7 @@ If static selection results are solid, Agent Context Lab can extend to dynamic c
 - EVICT;
 - RECALL;
 - COMPACT;
-- residency/churn/recall metrics.
+- residency/churn/recall metrics;
+- representation/lineage experiments.
 
 This extension connects naturally to 5R-AXIS Context Residency Management research without making 5R-AXIS implementation a prerequisite for completing the course.
