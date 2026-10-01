@@ -118,6 +118,7 @@ Start here:
 - [Benchmark protocol](docs/research/BENCHMARK.md)
 - [Observability](docs/research/OBSERVABILITY.md)
 - [Research Workbench](docs/research/RESEARCH_WORKBENCH.md)
+- [Coursework alignment](docs/research/COURSEWORK_ALIGNMENT.md)
 - [Sources and reusable inputs](docs/references/SOURCES.md)
 - [Roadmap](docs/roadmap/ROADMAP.md)
 
