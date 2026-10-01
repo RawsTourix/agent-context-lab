@@ -91,13 +91,15 @@ Conceptual pipeline:
 
 ```text
 available sources
-→ normalize/address context elements
+→ normalize/address provider-neutral context elements
+→ apply eligibility / hard constraints
 → classify fixed/mandatory vs optional
 → score optional elements
 → select optional elements under budget
+→ close structural dependencies if required
 → choose/materialize representation
 → apply deterministic ordering
-→ serialize projection
+→ serialize a provider-valid projection
 → ContextProjection + manifest
 ```
 
@@ -115,6 +117,19 @@ Examples:
 - structured state items.
 
 Elementization is fixed in ordinary policy comparisons because granularity changes both optimization and scoring workload.
+
+### Eligibility / hard constraints
+
+Before utility scoring, the Context Engine determines which source material is allowed and structurally eligible for the target invocation.
+
+Examples:
+
+- disclosure/security eligibility;
+- benchmark/runtime scope restrictions;
+- mandatory current-task constraints;
+- provider/tool structural requirements.
+
+These rules are not utility scores. A selector cannot override them.
 
 ### Scorer
 
@@ -153,6 +168,20 @@ Candidate policies:
 - later residency-aware policies.
 
 The policy receives already computed scores. It must not silently call another scorer.
+
+### Structural closure and materialization
+
+Selection operates on provider-neutral research elements rather than blindly deleting raw provider messages.
+
+The materialization stage must preserve request validity.
+
+Examples:
+
+- a selected tool observation may need a corresponding call identifier/structural envelope;
+- provider role sequences must remain valid;
+- fixed tool schemas/system instructions remain accounted for even when they are not decision variables.
+
+If a dependency itself should compete for budget as meaningful content, represent it explicitly as a dependency/group constraint in an extended model. Otherwise structural envelope cost is fixed/materialization overhead.
 
 ### RepresentationPolicy
 
@@ -344,6 +373,8 @@ content/reference
 estimated_tokens
 tokenizer_id/version
 mandatory flag + mandatory reason
+eligibility/hard-constraint metadata
+structural dependency/group refs when applicable
 metadata
 ```
 
