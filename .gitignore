@@ -1,0 +1,16 @@
+# Local experimental evidence. Never publish raw runs by accident.
+runs/
+exports/
+*.duckdb
+*.parquet
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+*.egg-info/
+dist/
+build/
