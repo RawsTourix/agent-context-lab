@@ -16,14 +16,13 @@ Deliverables:
 - source registry;
 - development baseline.
 
-Before implementation, resolve:
+Accepted for Phase 1:
 
-- repository license;
-- Python minimum version;
-- dependency manager/lockfile policy;
-- first smoke-test model adapter;
-- local raw-data/gitignore policy;
-- schema-version convention.
+- MIT;
+- Python 3.11+ and `uv`;
+- scripted deterministic model adapter first;
+- ignored `runs/` for local raw evidence;
+- persisted JSON records carry `schema_version: 1`.
 
 Exit criterion:
 
