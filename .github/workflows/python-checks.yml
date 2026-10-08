@@ -28,3 +28,11 @@ jobs:
         run: uv run --python ${{ matrix.python-version }} --extra dev pytest -q
       - name: Compile source
         run: uv run --python ${{ matrix.python-version }} python -m compileall -q src tests
+
+      - name: Export resolved uv.lock for review
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase1-uv-lock
+          path: uv.lock
+          if-no-files-found: error
