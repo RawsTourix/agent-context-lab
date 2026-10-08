@@ -1,13 +1,14 @@
 # Development baseline
 
-**Status:** proposed v0 implementation baseline after the documentation PR is accepted.
+**Status:** approved environment baseline (MIT, Python 3.11+, uv). Other choices are implementation proposals.
 
 This document narrows the first implementation enough that development can start without turning provisional technology choices into project semantics.
 
 ## 1. Runtime
 
-Recommended baseline:
+Accepted baseline:
 
+- MIT license;
 - Python 3.11+;
 - `pyproject.toml` as package/project definition;
 - `uv` for environment resolution and a committed lockfile;
@@ -197,15 +198,15 @@ Prefer reimplementing the small generic contracts first; only copy/adapt code wh
 
 5R-AXIS currently serves as conceptual/design input. Do not copy private/unlicensed implementation into the public repository unless an explicit licensing decision makes that reuse valid.
 
-## 11. Before Phase 1 code
+## 11. Phase 1 implementation defaults
 
-Resolve explicitly:
+Decisions accepted by the project owner: **MIT**, **Python 3.11+**, **uv**.
 
-- repository license;
-- Python minimum version;
-- dependency manager;
-- first real model provider/adapter after the deterministic ScriptedModel slice;
-- local data directory and gitignore policy;
-- schema versioning convention.
+Defaults for the first implementation PR:
 
-Once these are accepted, create the code scaffold in a separate implementation PR.
+- start with ScriptedModel; real model provider selection is deferred;
+- store local evidence under `runs/` (gitignored), keep exported databases/artifacts out of Git;
+- include explicit `schema_version: 1` in persisted JSON/JSONL records; reject unknown major schema versions rather than guessing;
+- create `pyproject.toml` and a lockfile using `uv` when the toolchain is available.
+
+Any later schema migration should be explicit and tested. No further architecture decision blocks starting Phase 1.
