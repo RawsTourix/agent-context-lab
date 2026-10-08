@@ -50,4 +50,4 @@ These files are the canonical evidence. They are excluded from Git by `.gitignor
 
 Run `uv run acl verify <run-path>` to check event sequencing, message order and per-call SHA-256 hashes. This validates stored evidence consistency, not the truth or quality of any LLM answer.
 
-**Lockfile limitation:** this isolated build environment cannot reach PyPI and does not cache all optional dependencies. `uv lock` must be executed with network access and the generated `uv.lock` committed before the project is declared dependency-reproducible. No fabricated lockfile is included.
+**Lockfile status:** GitHub Actions generated `uv.lock` as [phase1-uv-lock artifact](https://github.com/RawsTourix/agent-context-lab/actions/runs/37762753540). The extracted file passed `uv lock --check --offline` locally. It still needs to be committed at the repository root; until then the checked-in tree is not fully dependency-reproducible. No fabricated lockfile is included.
