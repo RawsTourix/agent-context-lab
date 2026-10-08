@@ -1,5 +1,191 @@
 # Agent Context Lab
 
-Experimental platform for reproducible research on context management in LLM-based agents.
+**Modular AI agent and research workbench for benchmarking context selection, utility scoring, token budgets, and context-management policies.**
 
-> **Status:** repository bootstrap. The initial architecture and research baseline is being prepared in documentation before implementation starts.
+> **Status:** design/research baseline. Implementation has not started yet.
+
+Agent Context Lab is a small, controlled agent environment built for **reproducible experiments with LLM context management**.
+
+The immediate academic use is the optimization-and-system-modeling laboratory sequence, but the repository is deliberately structured so that the benchmark, observability and research tooling remain useful for future agent development.
+
+## Core question
+
+A long-running agent may have much more information available than should be sent to the model on every call.
+
+This project asks:
+
+> **Which information should the model see now, under a limited context/token budget, without causing an unacceptable loss in task quality?**
+
+The first stage studies static selection for one model invocation. Later stages may extend this to alternative representations and dynamic residency with reversible eviction and recall.
+
+## Architecture at a glance
+
+```text
+                 Experiment Runner
+                        |
+                        v
+                    Cortex
+                        |
+              +---------+---------+
+              |                   |
+              v                   v
+        Context Engine        Tool Runtime
+              |
+   elementize / score / select
+   represent / order / serialize
+              |
+              v
+       ContextProjection
+              |
+              v
+          Model Gateway
+              |
+              v
+              LLM
+
+append-only events / manifests / artifacts
+              |
+              v
+           Run Bundle
+              |
+              v
+      Derived Research Store
+              |
+              v
+      Research Workbench
+```
+
+### Cortex
+
+**Cortex** is the project-local stable experimental execution kernel.
+
+It runs the model/tool loop but intentionally does **not** decide:
+
+- how context usefulness is scored;
+- which selection algorithm is used;
+- how benchmark quality is evaluated.
+
+"Stable" means fixed within a controlled comparison, not frozen forever.
+
+## Research principles
+
+1. **Quality first.** Fewer tokens are not an improvement if the task result becomes unacceptably worse.
+2. **Scorer ≠ selector ≠ evaluator.** Utility estimation, subset optimization and final task evaluation are separate.
+3. **Model assumptions are explicit.** The first 0–1 model uses additive utility/cost as a controlled simplification, not as a universal truth about context.
+4. **Position and granularity are controlled.** Ordering and elementization can affect quality and must not change silently between treatments.
+5. **Replayable evidence.** Every run preserves append-only structured evidence sufficient to reconstruct the experiment configuration and model-facing input when privacy settings allow it.
+6. **Provider neutrality.** Provider-native context features may optimize execution but do not define project semantics.
+7. **Research data are first-class.** Plots and tables are generated from stored experiment data, not assembled manually after the fact.
+8. **Total system cost matters.** Scorer/retrieval/solver overhead is measured rather than hidden behind downstream prompt savings.
+
+## Planned research path
+
+Initial static experiment:
+
+```text
+available context
+→ elementization
+→ utility scoring
+→ selection under budget
+→ fixed representation/order
+→ model call
+→ task result
+→ independent evaluation
+```
+
+Later representation/compression experiments:
+
+```text
+selected source
+→ raw | extractive | structured | summary
+→ model call
+```
+
+Later temporal extension:
+
+```text
+P1 → model call
+   → release / evict
+
+P2 → model call
+   → missing information
+   → recall
+
+P3 → model call
+```
+
+Candidate future operations:
+
+`PIN / RELEASE / EVICT / RECALL / COMPACT`.
+
+Important invariant:
+
+```text
+not resident in the current context != deleted
+```
+
+## Documentation
+
+Start here:
+
+- [Documentation map](docs/README.md)
+- [Concept baseline](docs/design/CONCEPT.md)
+- [Architecture](docs/design/ARCHITECTURE.md)
+- [Development baseline](docs/design/DEVELOPMENT_BASELINE.md)
+- [Benchmark protocol](docs/research/BENCHMARK.md)
+- [Experiment design](docs/research/EXPERIMENT_DESIGN.md)
+- [Observability](docs/research/OBSERVABILITY.md)
+- [Research Workbench](docs/research/RESEARCH_WORKBENCH.md)
+- [Coursework alignment](docs/research/COURSEWORK_ALIGNMENT.md)
+- [Sources and reusable inputs](docs/references/SOURCES.md)
+- [Roadmap](docs/roadmap/ROADMAP.md)
+
+For coding agents and contributors:
+
+- [AGENTS.md](AGENTS.md)
+
+## Existing inputs
+
+This project is intentionally informed by — but independent from — existing workstreams:
+
+- [RawsTourix/internet-search-bot](https://github.com/RawsTourix/internet-search-bot) — practical Gen1 agent/tool loop and real operational traces.
+- [5R-AXIS/agent](https://github.com/5r-axis/agent) — architectural research around bounded ContextProjection, source ownership, provenance and dynamic context residency.
+- [optimization-and-system-modeling/lab_context](https://github.com/rosbiotech-studies/optimization-and-system-modeling/tree/main/lab_context) — academic problem framing and sanitized real-trace reference material.
+
+External prior art now tracked includes long-context evaluation, compression, trajectory/evaluation frameworks and provider context hooks. See [SOURCES.md](docs/references/SOURCES.md).
+
+## Current implementation direction
+
+The first implementation should stay deliberately small:
+
+- **Python 3.11+ and `uv`** (accepted development baseline);
+- modular monolith;
+- provider-neutral Model Gateway;
+- deterministic fixture-backed tools;
+- append-only JSON/JSONL Run Bundles;
+- DuckDB + Parquet derived research storage;
+- Streamlit + Plotly first Research Workbench;
+- full/sliding/greedy/ILP context-selection policies;
+- OracleScorer before more complex heuristic/embedding/LLM scorers;
+- `scipy.optimize.milp` / HiGHS as the initial ILP candidate.
+
+These technology choices are provisional. The experiment semantics and data contracts are more important than any UI or framework.
+
+## Non-goals for v0
+
+Not required:
+
+- production-grade general agent platform;
+- vector database;
+- autonomous long-term memory;
+- multi-agent orchestration;
+- distributed runtime;
+- full MCP discovery stack;
+- consumer chat product;
+- hidden chain-of-thought logging;
+- learned context compression;
+- self-evolving context policy.
+
+## License
+
+[MIT License](LICENSE), copyright (c) 2026 RawsTourix. Third-party reuse still follows the license/provenance rules in [SOURCES.md](docs/references/SOURCES.md).
