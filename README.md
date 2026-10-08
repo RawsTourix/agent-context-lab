@@ -158,7 +158,7 @@ External prior art now tracked includes long-context evaluation, compression, tr
 
 The first implementation should stay deliberately small:
 
-- Python 3.11+;
+- **Python 3.11+ and `uv`** (accepted development baseline);
 - modular monolith;
 - provider-neutral Model Gateway;
 - deterministic fixture-backed tools;
@@ -188,6 +188,4 @@ Not required:
 
 ## License
 
-No project license has been selected yet.
-
-Before Phase 1 implementation, the repository license should be chosen. Reuse from other projects follows the license/provenance rules in [SOURCES.md](docs/references/SOURCES.md).
+[MIT License](LICENSE), copyright (c) 2026 RawsTourix. Third-party reuse still follows the license/provenance rules in [SOURCES.md](docs/references/SOURCES.md).
