@@ -99,6 +99,8 @@ Add synthetic cases that test:
 - prerequisites/complementarity;
 - additional constraints.
 
+Research option: compare exact ILP with capacity-indexed knapsack dynamic programming on matched integer-weight cases, reporting how runtime depends on both `N` and `B`. Do not declare either method universally fastest. See [METHOD_SELECTION.md](../research/METHOD_SELECTION.md).
+
 Exit criterion:
 
 > The base mathematical model is tested well beyond the small classroom example, and its simplifying assumptions are empirically visible rather than hidden.
@@ -132,6 +134,8 @@ Expand the researcher UI:
 - CSV/XLSX/Parquet/JSON exports;
 - append-only interesting-run annotations;
 - sanitized public export flow.
+
+Academic delivery gate: the Lab 6 input/output interface must allow actual candidate/parameter entry, validation, execution, and display of a solution, even if the Research Workbench remains primarily read-only. A small CLI/local form backed by the same solver contracts is sufficient if accepted in the course; a dashboard alone is not a substitute. Lab 4 additionally needs a **documented process model**, Lab 5 **identification of coefficients**, and Lab 7 an **executed optimization solution**. See [COURSEWORK_ALIGNMENT.md](../research/COURSEWORK_ALIGNMENT.md).
 
 Exit criterion:
 
