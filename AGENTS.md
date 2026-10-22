@@ -10,6 +10,7 @@ Before implementing or changing architecture, read:
 2. `docs/design/ARCHITECTURE.md`
 3. `docs/design/DEVELOPMENT_BASELINE.md`
 4. the relevant file under `docs/research/`
+   - for educational deliverables or solver/scalability work, specifically read `docs/research/TEACHER_REQUIREMENTS.md`, `docs/research/COURSEWORK_ALIGNMENT.md` and `docs/research/METHOD_SELECTION.md`;
 5. `docs/references/SOURCES.md` when reusing external/project-local code.
 
 ## Non-negotiable boundaries
@@ -17,6 +18,7 @@ Before implementing or changing architecture, read:
 - Cortex is the controlled runtime boundary and must not own scorer/selector/evaluator semantics.
 - Scorer and Evaluator are distinct responsibilities.
 - Context reduction is not success unless task quality remains acceptable.
+- The education pipeline requires distinct artifacts: Lab 4 process description, Lab 5 coefficient identification, Lab 6 **usable input/output interface**, Lab 7 actual optimization solution. Benchmark infrastructure supplements these deliverables; it does not replace them.
 - ILP optimality is only with respect to the declared surrogate scores/constraints.
 - Elementization, representation and ordering are experiment-affecting factors; do not change them silently.
 - Selection operates on provider-neutral research elements; Context Engine materialization must preserve provider/tool structural validity.
