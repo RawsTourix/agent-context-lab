@@ -15,6 +15,8 @@ This repository is documentation-first: architecture, experiment semantics and r
 - [OBSERVABILITY.md](research/OBSERVABILITY.md) — append-only run evidence, event model, ContextProjection manifests and replay/privacy rules.
 - [RESEARCH_WORKBENCH.md](research/RESEARCH_WORKBENCH.md) — researcher-facing UI, trajectory/context inspection, plots, tables, annotations and exports.
 - [COURSEWORK_ALIGNMENT.md](research/COURSEWORK_ALIGNMENT.md) — how the same research harness supports laboratory works 1–7 without becoming course-specific runtime code.
+- [TEACHER_REQUIREMENTS.md](research/TEACHER_REQUIREMENTS.md) — raw lecture source index, teacher requirements versus optional research engineering, and actual semester-2 deliverables.
+- [METHOD_SELECTION.md](research/METHOD_SELECTION.md) — Lab 3 classification, eligible algorithms, limitations and reproducible seven-item fixture.
 
 ## References
 
