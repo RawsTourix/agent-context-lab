@@ -1,141 +1,125 @@
 # Coursework alignment
 
-**Status:** working research-to-course map, not a replacement for the teacher's official assignment.
+**Status:** working source-grounded map, not a substitute for the teacher's assignment.
+**Academic source index and uncertainty rules:** [TEACHER_REQUIREMENTS.md](TEACHER_REQUIREMENTS.md).
+**Method and scaling argument for Lab 3:** [METHOD_SELECTION.md](METHOD_SELECTION.md).
 
-Agent Context Lab is intentionally broader than the laboratory reports. The course should consume reproducible results from the lab rather than dictate the whole software architecture.
+Agent Context Lab is broader than the seven laboratory reports. The course receives **specific, inspectable deliverables** from the harness; research infrastructure must not change what the teacher asked for. A minimal stand-alone implementation must support completion even if 5R-AXIS never becomes runnable.
 
-## Laboratory work 1 — subject domain and optimization problem
+## Semester 1: establish the model
 
-Project contribution:
+### Laboratory work 1 — subject domain and problem
 
-- defines the multi-step LLM-agent context problem;
-- distinguishes available information from model-facing context;
-- establishes that context reduction is not useful if task quality collapses.
+- Describe the information available to a multi-step AI agent and the smaller actual context sent for one model call.
+- Explain the quality-versus-resource problem and why naive maximal truncation is not acceptable.
+- No running agent, solver, scorer or benchmark is needed to justify the problem.
 
-No implementation is required to justify the subject domain.
+### Laboratory work 2 — mathematical formulation
 
-## Laboratory work 2 — mathematical formulation
-
-Static one-call selection becomes the first formal model.
-
-For optional context elements:
+For eligible optional context elements:
 
 ```text
-x_i in {0, 1}
-s_i = estimated token/resource cost under the declared elementization/tokenizer basis
-v_i = estimated utility proxy
-B   = optional-context budget
+x_i ∈ {0,1}             binary decision to include item i
+s_i > 0                 estimated item token cost
+v_i >= 0                estimated item usefulness for current task
+B >= 0                  remaining optional-token budget
+N                       number of optional candidates
+
+maximize Σ(v_i x_i)
+subject to Σ(s_i x_i) <= B
 ```
 
-Base formulation:
+Mandatory instructions and current-task constraints are included/reserved outside optional selection. In the base static formulation: **N binary decision variables, one functional budget constraint**, with variable domains stated separately. Neither the academic fixture size nor the presence of just one constraint limits N in the general model.
 
-```text
-maximize sum(v_i * x_i)
-subject to sum(s_i * x_i) <= B
-```
+Interpretation:
 
-Mandatory context is preferably reserved before optional selection in the simplest model.
+- `s_i` is a controlled additive cost *estimate*; account separately for serialized overhead and actual input tokens.
+- `v_i` is a surrogate utility estimate, **not** observed final task quality.
+- The additive objective ignores real dependencies/redundancy unless an explicitly extended model accounts for them.
+- Changing tokenization, representation, elementization or order changes the experiment and must be versioned.
 
-The classroom example can use a small N while the formulation remains valid for arbitrary N.
+Seven-item teaching fixture and exact expected objective: [METHOD_SELECTION.md](METHOD_SELECTION.md). The fixture is synthetic, not measured agent telemetry.
 
-Important interpretation:
+### Laboratory work 3 — choice and applicability of solution method
 
-- (s_i) is a controlled additive estimate for the mathematical model; actual serialized input is measured separately;
-- (v_i) is a surrogate utility estimate, not measured final task quality;
-- the additive objective is a base assumption, not a claim that real context elements never interact.
+**Teacher-side deliverable:** classify the formulated problem, compare applicable methods, explicitly quantify mathematical dimension and argue a method's computational suitability. A report should emphasize **why** a method is applicable and what limits it, rather than reproducing a long manual algorithm.
 
-These limitations belong in the project methodology even if the classroom write-up keeps the base model compact.
+**Lab contribution:**
 
-## Laboratory work 3 — method and computational applicability
+- the base problem is 0–1 knapsack / binary integer linear optimization;
+- compare greedy heuristics, dynamic programming and integer programming with branch-and-bound / branch-and-cut;
+- `ILPPolicy` with a versioned MILP solver is the proposed extensible default, not a claim that it is always fastest;
+- classic DP over integer capacity can be exact in `O(NB)` time, and B/state-space size matters;
+- avoid claiming that merely increasing N makes continuous LP NP-complete or that any method is universally optimal for speed.
 
-Project contribution:
+**Research extension, not an established teacher requirement:** build a no-LLM deterministic large-N/B generator, record status/gap/time/solver version/hardware, and empirically compare implementations. This supports the method justification and later work but must not be described as a mandatory live-provider experiment for Lab 3.
 
-- ILPPolicy implementation;
-- comparison with simple baselines;
-- separate large-N deterministic generator;
-- solver status/time/objective/gap diagnostics;
-- hardware/solver version capture for performance claims.
+## Semester 2: turn the model into a demonstrable process
 
-This allows testing scalability without paying for LLM calls.
+The four roles below follow the lecturer's description in Lecture 002 (see [primary transcript](https://github.com/rosbiotech-studies/optimization-and-system-modeling/blob/main/lecture-002/sources/raw-transcript--RawsTourix.txt)). Update them if a newer official assignment provides different requirements.
 
-## Laboratory work 4 — experimental data
+### Laboratory work 4 — object / business-process description
 
-Project contribution:
-
-- benchmark cases;
-- trace-derived workload design;
-- ContextProjection manifests;
-- token/latency/tool-event measurements;
-- append-only Run Bundles;
-- reproducible ExperimentSpec/TrialSpec/RunAttempt hierarchy.
-
-Real `internet-search-bot` traces are empirical references, not automatically benchmark ground truth.
-
-## Laboratory work 5 — parameter identification
-
-Central question:
-
-> How is utility (v_i) obtained?
+**Educational deliverable:** a clear model of the *process being optimized*, not merely a dataset.
 
 Project contribution:
 
-- OracleScorer for controlled cases;
-- deterministic heuristic scorer;
-- embedding scorer;
-- LLM scorer;
-- comparison/calibration against known relevance where available;
-- explicit measurement of scorer overhead.
+- describe one agent iteration as an observable process: task + allowed sources → mandatory/optional classification → parameterization/scoring → selection → valid model-facing serialization → model/tool execution → outcome;
+- identify actors/owners, incoming data, outgoing artifacts, decision points, exceptions and feedback/measurement;
+- provide a process diagram and accompanying narrative; it may use fixture tools and a ScriptedModel, with no production agent dependency.
 
-This stage must preserve the distinction between estimated utility and final task quality.
+Benchmark datasets and trace-derived scenarios are supporting material, **not a replacement** for the required process description.
 
-If scorer prompts/thresholds are tuned, development and final-test cases must be separated.
+### Laboratory work 5 — parameter identification
 
-## Laboratory work 6 — software implementation
+**Educational deliverable:** defensible numeric coefficients and how they are obtained.
 
 Project contribution:
 
-- Cortex;
-- Context Engine;
-- Model Gateway;
-- deterministic tool runtime;
-- scorers;
-- selection policies;
-- Experiment Runner;
-- append-only observability;
-- Research Store;
-- Research Workbench.
+- `s_i`: specify tokenizer/serializer basis, units, actual measurement or estimated value, and uncertainty;
+- `B`: define how mandatory/fixed content, protocol/tool schemas and usable capacity are accounted for;
+- `v_i`: define a repeatable estimation protocol and its limitations; consider deterministic heuristic, oracle-labeled *development/test* fixture, embedding or LLM scorer as separate research variants;
+- record scoring scale, source of labels, provenance, version, error/calibration where measurable and scorer overhead.
 
-The implementation should remain minimal enough that the experiment stays understandable.
+Do not infer `v_i` from hidden evaluation labels in ordinary policies. Synthetic classroom values are not automatically measurements. Parameter identification is distinct from “solver returns optimum”.
 
-## Laboratory work 7 — experiment and results
+### Laboratory work 6 — interface for input and output
+
+**Educational deliverable:** a **usable input/output interface** for the optimization task. Merely shipping a library API or a read-only dashboard is not equivalent unless the teacher accepts it.
+
+Minimum interaction: enter/import candidate elements, sizes, usefulness estimates, mandatory context/budget and select a policy; validate data, execute a solve and display selection `x_i`, objective, token consumption, spare budget, feasibility/solver status and understandable validation errors.
+
+Project contribution: a small CLI or local UI backed by the *same* schemas/solver/fixtures, optionally integrated into the Research Workbench. Keep source-of-truth contracts and model-independent semantics; avoid prematurely building a general user chat interface.
+
+### Laboratory work 7 — solve the optimization problem
+
+**Educational deliverable:** run a completed instance and show the actual optimization solution, explaining its result, feasibility and boundary conditions.
 
 Project contribution:
 
-- controlled policy/scorer/budget comparisons;
-- task-quality evaluation;
-- target-model and context-management overhead;
-- token/cost/latency metrics;
-- Pareto analysis;
-- failure/critical-omission analysis;
-- confidence intervals/effect sizes where appropriate;
-- automatic plots/tables/exports.
+- take specified input → invoke a documented method → show selected elements and totals;
+- verify constraints, distinguish optimum vs feasible incumbent vs infeasible/failed run;
+- preserve the model/parameter/solver versions used;
+- optionally accompany the solution with research benchmark and comparative task-quality measurements.
 
-The main empirical question is not "how many tokens were removed?" but:
+The full policy/scorer benchmark is valuable for the course project and later research, **but it supplements rather than replaces** the teacher's requested solution.
 
-> How much context/system cost can be reduced before task quality degrades beyond a predeclared acceptable threshold?
+## Research beyond the minimum academic requirements
 
-Position/order and element granularity are controlled factors so they do not silently invalidate the comparison.
+The harness separately supports:
 
-## Beyond the laboratory sequence
+- deterministic and real-provider model/tool cases;
+- trace-derived (sanitized) workloads;
+- versioned ContextProjection manifests, append-only runs and replayable comparisons;
+- scorer vs selector error separation and quality floors;
+- provider usage/cost/latency plus selector/scorer overhead;
+- development/test split and repetition where appropriate;
+- optional dynamic residency `PIN / RELEASE / EVICT / RECALL` with exact source references and provenance.
 
-If static selection results are solid, Agent Context Lab can extend to dynamic context residency:
+Do not make an external agent, expensive LLM calls, long-term memory, vector database or 5R-AXIS integration a blocker for *any* of the seven lab deliverables.
 
-- PIN / prefer;
-- RELEASE;
-- EVICT;
-- RECALL;
-- COMPACT;
-- residency/churn/recall metrics;
-- representation/lineage experiments.
+The central empirical research question remains:
 
-This extension connects naturally to 5R-AXIS Context Residency Management research without making 5R-AXIS implementation a prerequisite for completing the course.
+> How much context/system cost can be reduced **without unacceptable downstream task-quality loss**?
+
+ILP solution optimality is relative to specified surrogate values/constraints, not a guarantee of task success. See [Benchmark](BENCHMARK.md), [Experiment design](EXPERIMENT_DESIGN.md), and [Observability](OBSERVABILITY.md).
