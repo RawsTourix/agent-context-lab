@@ -1,0 +1,28 @@
+[project]
+name = "agent-context-lab"
+version = "0.1.0"
+description = "Reproducible LLM agent context research harness"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = []
+
+[project.optional-dependencies]
+workbench = ["streamlit>=1.38", "plotly>=5.24"]
+dev = ["pytest>=8", "ruff>=0.8"]
+
+[project.scripts]
+acl = "agent_context_lab.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_context_lab"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100

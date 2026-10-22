@@ -1,0 +1,38 @@
+name: Python checks
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Install Python
+        run: uv python install ${{ matrix.python-version }}
+      - name: Install project and test dependencies
+        run: uv sync --python ${{ matrix.python-version }} --extra dev
+      - name: Run deterministic tests
+        run: uv run --python ${{ matrix.python-version }} --extra dev pytest -q
+      - name: Compile source
+        run: uv run --python ${{ matrix.python-version }} python -m compileall -q src tests
+
+      - name: Export resolved uv.lock for review
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase1-uv-lock
+          path: uv.lock
+          if-no-files-found: error
