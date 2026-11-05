@@ -17,6 +17,7 @@ This repository is documentation-first: architecture, experiment semantics and r
 - [COURSEWORK_ALIGNMENT.md](research/COURSEWORK_ALIGNMENT.md) — how the same research harness supports laboratory works 1–7 without becoming course-specific runtime code.
 - [TEACHER_REQUIREMENTS.md](research/TEACHER_REQUIREMENTS.md) — raw lecture source index, teacher requirements versus optional research engineering, and actual semester-2 deliverables.
 - [METHOD_SELECTION.md](research/METHOD_SELECTION.md) — Lab 3 classification, eligible algorithms, limitations and reproducible seven-item fixture.
+- [REVIEW_FEEDBACK_LABS_1_2.md](research/REVIEW_FEEDBACK_LABS_1_2.md) — October peer-review corrections to utility, budget accounting, integer units, optimal-vector definition and single-cover submission packaging.
 
 ## References
 
