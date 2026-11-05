@@ -18,6 +18,7 @@ Before implementing or changing architecture, read:
 - Cortex is the controlled runtime boundary and must not own scorer/selector/evaluator semantics.
 - Scorer and Evaluator are distinct responsibilities.
 - Context reduction is not success unless task quality remains acceptable.
+- When generating course reports or explaining model terms, consult `docs/research/REVIEW_FEEDBACK_LABS_1_2.md`: define task-dependent utility, separate optional token budget from full context capacity and mandatory content, specify integer token units and formally define `X*`. Reviewer packaging note: combine submitted works under a single common title page.
 - The education pipeline requires distinct artifacts: Lab 4 process description, Lab 5 coefficient identification, Lab 6 **usable input/output interface**, Lab 7 actual optimization solution. Benchmark infrastructure supplements these deliverables; it does not replace them.
 - ILP optimality is only with respect to the declared surrogate scores/constraints.
 - Elementization, representation and ordering are experiment-affecting factors; do not change them silently.
