@@ -3,6 +3,7 @@
 **Status:** working source-grounded map, not a substitute for the teacher's assignment.
 **Academic source index and uncertainty rules:** [TEACHER_REQUIREMENTS.md](TEACHER_REQUIREMENTS.md).
 **Method and scaling argument for Lab 3:** [METHOD_SELECTION.md](METHOD_SELECTION.md).
+**Lab 1–2 clarity review and combined-report packaging:** [REVIEW_FEEDBACK_LABS_1_2.md](REVIEW_FEEDBACK_LABS_1_2.md) (peer feedback, not a verbatim lecturer requirement).
 
 Agent Context Lab is broader than the seven laboratory reports. The course receives **specific, inspectable deliverables** from the harness; research infrastructure must not change what the teacher asked for. A minimal stand-alone implementation must support completion even if 5R-AXIS never becomes runnable.
 
